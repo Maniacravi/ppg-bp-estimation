@@ -1,3 +1,6 @@
+# Data (to prevent large database from being uploaded to GitHub - link provided in readme)
+data/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
