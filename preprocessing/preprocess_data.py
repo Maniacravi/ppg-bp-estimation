@@ -49,8 +49,18 @@ def load_mat_data(mat_path):
 # -------------------------------------------------------------------------
 def detect_peaks(abp_signal, fs=125):
     """Detect systolic (maxima) and diastolic (minima) peaks from ABP."""
-    systolic_peaks, _ = find_peaks(abp_signal, distance=int(0.3 * fs))
-    diastolic_peaks, _ = find_peaks(-abp_signal, distance=int(0.3 * fs))
+    # Detect systolic peaks using find_peaks. 
+    systolic_peaks, _ = find_peaks(abp_signal, distance=fs*0.2, prominence=20)  # Minimum distance of 0.2 seconds between peaks
+    # Detect diastolic peaks as the minimum point between each pair of systolic peaks
+    diastolic_peaks = []
+    for i in range(len(systolic_peaks) - 1):
+        start = systolic_peaks[i]
+        end = systolic_peaks[i + 1]
+        if end > start:  # Ensure valid range
+            diastolic_peak = start + np.argmin(abp_signal[start:end])
+            diastolic_peaks.append(diastolic_peak)
+    systolic_peaks = np.array(systolic_peaks)
+    diastolic_peaks = np.array(diastolic_peaks)
     return systolic_peaks, diastolic_peaks
 
 
